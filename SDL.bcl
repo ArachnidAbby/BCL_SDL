@@ -1,0 +1,205 @@
+import stdlib;
+
+struct SDL_Rect {
+    x: i32,
+    y: i32,
+    w: i32,
+    h: i32;
+}
+
+struct SDL_DisplayMode {
+    w: i32, h: i32,
+    refresh_rate: i32,
+    driverdata: &char;
+}
+
+struct SDL_WindowShaperMode {
+    mode: i32,
+    parameters: i32;
+}
+
+struct SDL_WindowShaper {
+    window: &char,
+    userx: i32, usery: i32,
+    mode: SDL_WindowShaperMode;
+}
+
+struct SDL_WindowUserData {
+    name: strlit,
+    data: &char,
+    next: &char;
+}
+
+struct SDL_PixelFormat {
+    SDL_Pallet: &char, // should be &SDL_Palette
+    bits_per_pixel: char,
+    bytes_per_pixel: char,
+
+    Rloss: char,
+    Gloss: char,
+    Bloss: char,
+    Aloss: char,
+
+    Rmask: i32,
+    Gmask: i32,
+    Bmask: i32,
+    Amask: i32,
+
+    color_key: i32,
+    alpha: char;
+
+}
+
+struct SDL_Surface {
+    flags: i32,
+    format: &SDL_PixelFormat,
+    w: i32, h: i32,
+    pitch: char[2], // should be i16
+    pixels: &char,
+    userdata: &char,
+    locked: i32,
+    lock_data: &char,
+    clip_rect: SDL_Rect,
+    map: &char,
+    refcount: i32;
+}
+
+struct SDL_Window {
+    magic: &char,
+    id: i32,
+    title: &char,
+    icon: &SDL_Surface,
+    x: i32, y: i32,
+    w: i32, h: i32,
+    min_w: i32, min_y: i32,
+    max_w: i32, max_h: i32,
+    flags: i32,
+    last_fullscreen_flags: i32,
+
+    windowed: SDL_Rect,
+    fullscreen_mode: SDL_DisplayMode,
+    brightness: f32,
+    gamma: &char[2], // in place of &i16
+    saved_gamma: &char[2],
+    surface: &SDL_Surface,
+    is_hiding: i32, // in place of SDL_bool
+    is_destroying: i32, // in place of SDL_bool
+    shaper: &SDL_WindowShaper,
+    data: &SDL_WindowUserData,
+    driverdata: &char,
+    prev: &char,
+    next: &char;
+}
+
+import SDL_Events;
+
+
+define lshift(x: i32, amount: i32) -> i32 {
+    for _ in 0..amount {
+        x *= 2;
+    }
+    return x;
+}
+
+define lshift(x:char, amount: i32) -> i32 {
+    return (x as i32).lshift(amount);
+}
+
+define construct_i32(x: char[124], start: i32, end: i32) -> i32 {
+    output = 0;
+    for i in start..end+1 {
+        shift_amount = end-i;
+        output += lshift(x[i], shift_amount);
+    }
+
+    return output;
+}
+
+struct SDL_Event {
+    type: i32,
+    bytes: char[124]; // lack of type unions causes this garbage
+
+    define key(self) -> SDL_KeyboardEvent {
+        return SDL_KeyboardEvent {
+            type: self.type,
+            // no slicing, how painful
+            timestamp: construct_i32(self.bytes, 0, 3),
+            windowID: construct_i32(self.bytes, 4, 7),
+            state: self.bytes[8],
+            repeat: self.bytes[9],
+            padding2: self.bytes[10],
+            padding3: self.bytes[11],
+            keysym: SDL_Keysym {
+                scancode: self.bytes[12] as i32,
+                sym: construct_i32(self.bytes, 13, 16),
+                mod: [self.bytes[17], self.bytes[18]]
+            }
+        };
+    }
+
+    // common: SDL_CommonEvent,
+    // display: SDL_DisplayEvent, // 2, 1, 1, 1, 2
+    // window: SDL_WindowEvent,
+    // key: SDL_KeyboardEvent,
+    // edit: SDL_TextEditingEvent,
+    // editExt: SDL_TextEditingExtEvent,
+    // text: SDL_TextInputEvent,
+    // motion: SDL_MouseMotionEvent,
+    // button: SDL_MouseButtonEvent,
+    // wheel: SDL_MouseWheelEvent,
+    // jball: char[5],
+    // jhat: char[4],
+    // jbutton: char[4],
+    // resize: char[5],
+    // expose: char,
+    // quit: char,
+    // user: char[13], // 1, 4, 8, 8
+    // syswm: char[9];
+}
+
+define create_default_event() -> SDL_Event {
+    return SDL_Event {
+        type: 0,
+        bytes: [' '; 124]
+    };
+}
+
+
+define new_color(r: i32, g: i32, b: i32) -> i32 {
+    rc = r * 65536;
+    gc = g * 256;
+    bc = b;
+    return rc+gc+bc;
+}
+
+define SDL_Init(flags: i32) -> i32;
+define SDL_CreateWindow(name: strlit, x: i32, y: i32, w: i32, h: i32, idk: i32) -> &SDL_Window;
+define SDL_GetWindowSurface(window: &SDL_Window) -> &SDL_Surface;
+define SDL_GetWindowSurface(window: &SDL_Window) -> &SDL_Surface;
+define SDL_UpdateWindowSurface(window: &SDL_Window) -> i32;
+define SDL_Delay(ms: i32);
+define SDL_PollEvent(event: &SDL_Event) -> i32;
+define SDL_Quit();
+
+define SDL_GetTicks() -> i32;
+
+define SDL_FillRect(surf: &SDL_Surface, rect: &SDL_Rect, color: i32) -> i32;
+
+define SDL_FillScreen(surf: &SDL_Surface, color: i32) {
+    rect = SDL_Rect {x: 0, y: 0, w: surf.w, h: surf.h};
+    SDL_FillRect(surf, &rect, color);
+};
+
+
+// no enums, this is the work around
+define SDL_QUIT() -> i32 {
+    return 256;
+}
+
+define SDL_KEYDOWN() -> i32 {
+    return 768;
+}
+
+define SDL_KEYUP() -> i32 {
+    return 769;
+}

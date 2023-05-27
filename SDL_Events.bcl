@@ -1,0 +1,194 @@
+
+struct SDL_Keysym {
+    scancode: i32, // SDL_Scancode (char)
+    sym: i32,      // SDL_Keycode (i32)
+    mod: char[2],
+    unused: i32;
+}
+
+
+// events
+struct SDL_CommonEvent {
+    type: i32,
+    timestamp: i32;
+}
+
+
+struct SDL_DisplayEvent {
+    type: i32,
+    timestamp: i32,
+    DisplayID: i32, // SDL_DisplayID, is typedefed to u32
+    event: char,
+    padding1: char,
+    padding2: char,
+    padding3: char,
+    data1: i32;
+}
+
+
+struct SDL_WindowEvent {
+    type: i32,
+    timestamp: i32,
+    windowID: i32, // SDL_WindowID, is typedefed to u32
+    event: char,
+    padding1: char,
+    padding2: char,
+    padding3: char,
+    data1: i32,
+    data1: i32;
+}
+
+
+struct SDL_KeyboardEvent {
+    type: i32,
+    timestamp: i32,
+    windowID: i32, // SDL_WindowID, is typedefed to u32
+    state: char,
+    repeat: char,
+    padding2: char,
+    padding3: char,
+    keysym: SDL_Keysym;
+}
+
+
+struct SDL_TextEditingEvent {
+    type: i32,
+    timestamp: i32,
+    windowID: i32, // SDL_WindowID, is typedefed to u32
+    text: char[32], // char[SDL_TEXTEDITINGEVENT_TEXT_SIZE]
+    start: i32,
+    length: i32;
+}
+
+
+struct SDL_TextEditingExtEvent {
+    type: i32,
+    timestamp: i32,
+    windowID: i32, // SDL_WindowID, is typedefed to u32
+    text: char[4], // should be &char, but this makes the type non-returnable. later use Box<char>
+    start: i32,
+    length: i32;
+}
+
+
+struct SDL_TextInputEvent {
+    type: i32,
+    timestamp: i32,
+    windowID: i32, // SDL_WindowID, is typedefed to u32
+    text: char[32]; // char[SDL_TEXTEDITINGEVENT_TEXT_SIZE]
+}
+
+
+struct SDL_MouseMotionEvent {
+    type: i32,
+    timestamp: i32,
+    windowID: i32, // SDL_WindowID, is typedefed to u32
+    which: i32,    // SDL_MouseID
+    state: i32,
+    x: f32, y: f32,
+    xrel: f32, yrel: f32;
+}
+
+
+struct SDL_MouseButtonEvent {
+    type: i32,
+    timestamp: i32,
+    windowID: i32, // SDL_WindowID, is typedefed to u32
+    which: i32,    // SDL_MouseID
+    button: char,
+    state: char,
+    clicks: char,
+    padding: char,
+    x: f32, y: f32;
+}
+
+
+struct SDL_MouseWheelEvent {
+    type: i32,
+    timestamp: i32,
+    windowID: i32, // SDL_WindowID, is typedefed to u32
+    which: i32,    // SDL_MouseID
+    x: f32, y: f32,
+    direction: i32,
+    mouseX: f32, mouseY: f32;
+}
+
+
+// struct SDL_JoyAxisEvent {
+
+// }
+
+
+// struct SDL_JoyBallEvent {
+
+// }
+
+
+// struct SDL_JoyHatEvent {
+
+// }
+
+
+// struct SDL_JoyButtonEvent {
+
+// }
+
+
+// struct SDL_JoyDeviceEvent {
+
+// }
+
+
+// struct SDL_ControllerAxisEvent {
+
+// }
+
+
+// struct SDL_ControllerButtonEvent {
+
+// }
+
+
+// struct SDL_ControllerDeviceEvent {
+
+// }
+
+
+// struct SDL_AudioDeviceEvent {
+
+// }
+
+
+// struct SDL_QuitEvent {
+
+// }
+
+
+// struct SDL_UserEvent {
+
+// }
+
+
+// struct SDL_SysWMEvent {
+
+// }
+
+
+// struct SDL_TouchFingerEvent {
+
+// }
+
+
+// struct SDL_MultiGestureEvent {
+
+// }
+
+
+// struct SDL_DollarGestureEvent {
+
+// }
+
+
+// struct SDL_DropEvent {
+
+// }
